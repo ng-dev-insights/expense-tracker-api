@@ -4,7 +4,7 @@ export const expenses = [
 ];
 
 export function getExpenseById(id) {
-  return expenses.find(expenses => expenses.id === id);
+  return expenses.find(expense => expense.id === id);
 }
 
 export function createExpenses(data) {
@@ -17,5 +17,36 @@ export function createExpenses(data) {
 }
 
 export function filterExpensesByCategory(category) {
-  return expenses.filter(expenses => expenses.category.toLowerCase() === category.trim().toLowerCase());
+  return expenses.filter(expense => expense.category.toLowerCase() === category.trim().toLowerCase());
+}
+
+export function updateExpensesById(id, data) {
+  const index = expenses.findIndex(expense => expense.id === id);
+  if (index === -1) {
+    return null;
+  }
+  expenses[index] = { id, ...data };
+  return expenses[index];
+}
+
+export function deleteExpenseById(id) {
+  const index = expenses.findIndex(expense => expense.id === id);
+  if (index === -1) {
+    return null;
+  }
+  const deletedExpense = expenses[index];
+  expenses.splice(index, 1)
+  return deletedExpense;
+
+}
+
+export function patchExpensesById(id, data) {
+  const index = expenses.findIndex(expense => expense.id === id);
+  if (index === -1) {
+    return null;
+  }
+
+  const expense = expenses[index];
+  expenses[index] = { ...expense, ...data };
+  return expenses[index];
 }
