@@ -8,7 +8,7 @@ const options = {
             version: '1.0.0',
             description: 'A learning project — full CRUD on expenses'
         },
-        servers: [{ url: 'http://localhost:3000' }]
+        servers: [{ url: '/' }]
     },
     apis: ['./src/routes/*.js']
 };

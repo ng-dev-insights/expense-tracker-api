@@ -10,6 +10,10 @@ app.use(express.json());
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
+app.get('/', (req, res) => {
+    return res.redirect('/api-docs');
+});
+
 app.get('/health', (req, res) => {
     return res.json({ status: 'ok' });
 })
