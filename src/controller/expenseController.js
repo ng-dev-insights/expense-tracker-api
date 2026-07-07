@@ -1,8 +1,8 @@
 import { HTTP_STATUS } from "../constant/httpStatus.js";
-import { createExpenses, expenses, getExpenseById, filterExpensesByCategory, updateExpensesById, deleteExpenseById, patchExpensesById } from "../data/expenses.js";
+import { createExpenses, getExpenseById, filterExpensesByCategory, updateExpensesById, deleteExpenseById, patchExpensesById, getAllExpensesFromDb } from "../data/expenses.js";
 import { ApiResponse } from "../utils/apiResponses.js";
 
-export function getAllExpenses(req, res) {
+export async function getAllExpenses(req, res) {
     const { category } = req.query;
 
     if (category !== undefined && category.trim() === '') {
@@ -14,6 +14,7 @@ export function getAllExpenses(req, res) {
         return res.status(HTTP_STATUS.OK).json(new ApiResponse(filteredData));
     }
 
+    const expenses = getAllExpensesFromDb();
     return res.status(HTTP_STATUS.OK).json(new ApiResponse(expenses));
 }
 

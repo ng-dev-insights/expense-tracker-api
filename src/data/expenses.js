@@ -16,8 +16,14 @@ export function createExpenses(data) {
   return newExpenses;
 }
 
-export function filterExpensesByCategory(category) {
-  return expenses.filter(expense => expense.category.toLowerCase() === category.trim().toLowerCase());
+export async function filterExpensesByCategory(category) {
+  const results = await pool.query('Select * from expenses where category= $1', [category.trim()]);
+  return results.rows;
+}
+
+export async function getAllExpensesFromDb() {
+  const results = await pool.query('Select * from expenses');
+  return results.rows;
 }
 
 export function updateExpensesById(id, data) {
@@ -29,15 +35,14 @@ export function updateExpensesById(id, data) {
   return expenses[index];
 }
 
-export function deleteExpenseById(id) {
-  const index = expenses.findIndex(expense => expense.id === id);
-  if (index === -1) {
+export async function deleteExpenseById(id) {
+  const expense = await pool.query('Delete from expenses where id=$1 RETURNING *', [id]);
+
+  if (expense.rows.length === 0) {
     return null;
   }
-  const deletedExpense = expenses[index];
-  expenses.splice(index, 1)
-  return deletedExpense;
 
+  return expense.rows[0];
 }
 
 export function patchExpensesById(id, data) {
