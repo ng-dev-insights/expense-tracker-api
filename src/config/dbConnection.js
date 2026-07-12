@@ -1,4 +1,8 @@
-import { Pool } from 'pg';
+import pg from 'pg';
+const { Pool, types } = pg;
+
+pg.types.setTypeParser(types.builtins.NUMERIC, (val) => parseFloat(val));
+pg.types.setTypeParser(types.builtins.DATE, (val) => val);
 
 export const pool = new Pool({
     user: process.env.DB_USER,

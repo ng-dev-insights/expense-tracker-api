@@ -10,17 +10,17 @@ export async function getAllExpenses(req, res) {
     }
 
     if (category) {
-        const filteredData = filterExpensesByCategory(category);
+        const filteredData = await filterExpensesByCategory(category);
         return res.status(HTTP_STATUS.OK).json(new ApiResponse(filteredData));
     }
 
-    const expenses = getAllExpensesFromDb();
+    const expenses = await getAllExpensesFromDb();
     return res.status(HTTP_STATUS.OK).json(new ApiResponse(expenses));
 }
 
-export function getExpensesById(req, res) {
+export async function getExpensesById(req, res) {
     const id = Number(req.params.id);
-    const expense = getExpenseById(id);
+    const expense = await getExpenseById(id);
 
     if (!expense) {
         return res.status(HTTP_STATUS.NOT_FOUND).json(new ApiResponse(null, "Expense Not Found"));
@@ -30,7 +30,7 @@ export function getExpensesById(req, res) {
     return res.status(HTTP_STATUS.OK).json(new ApiResponse(expense));
 }
 
-export function createNewExpenses(req, res) {
+export async function createNewExpenses(req, res) {
     const { amount, category, description, date } = req.body;
 
     const error = validateFields({ amount, category, description, date })
@@ -38,12 +38,12 @@ export function createNewExpenses(req, res) {
         return res.status(HTTP_STATUS.BAD_REQUEST).json(new ApiResponse(null, error));
     }
 
-    const newExpense = createExpenses({ amount, category, description, date });
+    const newExpense = await createExpenses({ amount, category, description, date });
 
     return res.status(HTTP_STATUS.CREATED).json(new ApiResponse(newExpense));
 }
 
-export function updateExpenses(req, res) {
+export async function updateExpenses(req, res) {
     const id = Number(req.params.id);
     const { amount, category, description, date } = req.body;
 
@@ -56,7 +56,7 @@ export function updateExpenses(req, res) {
         return res.status(HTTP_STATUS.BAD_REQUEST).json(new ApiResponse(null, error));
     }
 
-    const updatedExpenses = updateExpensesById(id, { amount, category, description, date });
+    const updatedExpenses = await updateExpensesById(id, { amount, category, description, date });
 
     if (!updatedExpenses) {
         return res.status(HTTP_STATUS.NOT_FOUND).json(new ApiResponse(null, 'Expense not found'));
@@ -64,14 +64,14 @@ export function updateExpenses(req, res) {
     return res.status(HTTP_STATUS.OK).json(new ApiResponse(updatedExpenses));
 }
 
-export function deleteExpense(req, res) {
+export async function deleteExpense(req, res) {
     const id = Number(req.params.id);
 
     if (!id) {
         return res.status(HTTP_STATUS.BAD_REQUEST).json(new ApiResponse(null, 'Invalid expense id'));
     }
 
-    const deletedExpense = deleteExpenseById(id);
+    const deletedExpense = await deleteExpenseById(id);
 
     if (!deletedExpense) {
         return res.status(HTTP_STATUS.NOT_FOUND).json(new ApiResponse(null, 'Expense Not Found'))
@@ -80,7 +80,7 @@ export function deleteExpense(req, res) {
     return res.status(HTTP_STATUS.OK).json(new ApiResponse(null, `Expense of id ${deletedExpense.id} Deleted SuccessFully`));
 }
 
-export function patchExpenses(req, res) {
+export async function patchExpenses(req, res) {
     const id = Number(req.params.id);
     const { amount, category, description, date } = req.body;
 
@@ -118,7 +118,7 @@ export function patchExpenses(req, res) {
         return res.status(HTTP_STATUS.BAD_REQUEST).json(new ApiResponse(null, 'No updates provided'));
     }
 
-    const patchExpense = patchExpensesById(id, updated);
+    const patchExpense = await patchExpensesById(id, updated);
 
     if (!patchExpense) {
         return res.status(HTTP_STATUS.NOT_FOUND).json(new ApiResponse(null, 'Expense not found'));
